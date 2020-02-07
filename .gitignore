@@ -3,4 +3,3 @@
 node_modules/
 .vscode/
 */html/*.html
-package-lock.json

@@ -43,6 +43,7 @@ root
 
 ## Usage
 <pre>
+npm install -g gulp
 npm install
 gulp
 </pre>

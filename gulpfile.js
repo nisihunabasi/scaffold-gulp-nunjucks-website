@@ -5,7 +5,7 @@
  * 
  * ・ローカルサーバーの生成→自動ブラウザリロード(browser-sync)
  * ・nunjucksでHTMLレンダリング→静的HTMLファイル保存(gulp-nunjucks-render)
- * ・HTML整形(gulp-html-beautify)
+ * ・HTML整形(gulp-beautify)
  * ・自動更新検知(watch)
  * 
  * 
@@ -18,7 +18,7 @@
 const gulp          = require("gulp");                  //gulp本体。
 const nunjucks      = require("gulp-nunjucks-render");  //nunjucksのレンダリングをgulpで出来るようにするモジュール。このタスクの柱。
 const data          = require("gulp-data");             //ファイルを扱えるようにするモジュール？実はよく理解していない。
-const beautify      = require("gulp-html-beautify");    //HTMLファイルをきれいに整形してくれる。人がやるより確実。
+const beautify      = require("gulp-beautify");        //HTMLファイルをきれいに整形してくれる。人がやるより確実。
 const plumber       = require("gulp-plumber");          //エラーを吐いてもgulp.watchが死なないようにするモジュール。これがないとプロセスが死ぬ。
 
 //各サイトのbrowser-sync 自動でブラウザを起動してページを開くモジュール。まじ便利。
@@ -59,7 +59,7 @@ gulp.task("nunjucks", () => {
             return require(paths.src.json);
         }))
         .pipe(nunjucks({ path: paths.src.template }))
-        .pipe(beautify(beautifyOption))
+        .pipe(beautify.html(beautifyOption))
         .pipe(gulp.dest(paths.dest.root));
 });
 //task: browser-sync
@@ -76,7 +76,7 @@ gulp.task("browser-sync", () => {
 });
 //task: watch
 gulp.task("watch", () => {
-    gulp.watch(paths.src.template + "**/*.njk", ["nunjucks"]);
+    gulp.watch(paths.src.template + "**/*.njk", gulp.task("nunjucks"));
 });
 
-gulp.task("default", ["browser-sync", "nunjucks", "watch"]);
+gulp.task("default", gulp.parallel("browser-sync", "watch", "nunjucks"));
